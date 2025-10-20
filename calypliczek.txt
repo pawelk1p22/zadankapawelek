@@ -1,0 +1,366 @@
+1.1 — uzupełniona tabela
+
+Dla podanych par policzyłem sumy właściwych dzielników (czyli wszystkich dodatnich dzielników mniejszych od liczby).
+
+(78, 64) — już dane w treści: suma dzielników 78 = 90, suma dzielników 64 = 63 → NIE (nie są skojarzone).
+
+(20, 21):
+
+dzielniki 20 < 20: 1, 2, 4, 5, 10 → suma = 22
+
+dzielniki 21 < 21: 1, 3, 7 → suma = 11
+Porównienie: dla 20 suma = 22 = 21+1, ale dla 21 suma = 11 ≠ 20+1 → NIE (nie są skojarzone).
+
+(75, 48):
+
+dzielniki 75 < 75: 1, 3, 5, 15, 25 → suma = 49
+
+dzielniki 48 < 48: 1,2,3,4,6,8,12,16,24 → suma = 76
+Porównienie: suma(75)=49 = 48+1 oraz suma(48)=76 = 75+1 → TAK (są skojarzone).
+
+Podsumowanie tabeli (skrótowo):
+
+(78, 64): suma dzielników 78 = 90, suma dzielników 64 = 63 → NIE
+
+(20, 21): suma(20)=22, suma(21)=11 → NIE
+
+(75, 48): suma(75)=49, suma(48)=76 → TAK
+
+1.2
+import math
+
+def sum_proper_divisors(n):
+    # suma dzielników dodatnich mniejszych od n (czyli właściwych)
+    if n <= 1:
+        return 0
+    s = 1  # 1 jest dzielnikiem wszystkich n>1
+    root = int(math.isqrt(n))
+    for d in range(2, root+1):
+        if n % d == 0:
+            s += d
+            other = n // d
+            if other != d and other != n:
+                s += other
+    # uwaga: gdy n jest kwadratem, dodaliśmy d tylko raz; 1 dodane wcześniej
+    return s
+
+def find_associated(a):
+    if a <= 1:
+        return "NIE"
+    s_a = sum_proper_divisors(a)
+    b = s_a - 1
+    if b <= 1 or b == a:
+        return "NIE"
+    s_b = sum_proper_divisors(b)
+    if s_b == a + 1:
+        return b
+    else:
+        return "NIE"
+
+# przykłady:
+for a in [140, 75, 20]:
+    print(a, "->", find_associated(a))
+# oczekiwane m.in.: 140 -> 195, 75 -> 48
+
+
+2.1
+
+Dane: n = 6, A = [4,6,3,5,2,1].
+
+Po wykonaniu algorytmu (wg opisu) tablica staje się:
+A = [4, 3, 2, 1, 5, 6]
+
+(Uwaga: indeksowanie w oryginale od 1; przedstawiłem wynik w typowym zapisie listy.)
+
+2.2
+
+Prosty konstrukcyjny przykład 7-elementowy, dla którego wykonuje się dokładnie 5 razy zamień:
+Weź klucz dużą liczbę (np. 6) na pozycji 1 i pięć mniejszych elementów w pozostałych miejscach:
+A = [6, 1, 2, 3, 4, 5, 7]
+Wtedy elementy mniejsze od klucza (1,2,3,4,5) występują 5 razy → 5 zamień.
+
+2.3
+
+Tablica A[1..100] podana w opisie (kolejno końcówki 0,9,8,...,1). Po wykonaniu funkcji:
+
+Symulacja (krótko): dla tej konkretnej permutacji wynik to:
+
+w = 10
+
+A[1] = 10, A[2] = 20, A[3] = 30
+
+3.1
+
+awaria serwera SMTP Centralnej Komisji Egzaminacyjnej — F
+
+awaria serwera poczty użytkownika — F
+
+awaria serwera DNS — P
+
+brak prawidłowego klucza szyfrującego w przeglądarce — F
+
+(Uzasadnienie: dostęp po IP działa → serwer działa, ale domena nie jest rozwiązywana → DNS.)
+
+3.2 (rekurencja)
+
+Dana funkcja (zgodnie z arkuszem):
+f(1) = 4 oraz f(n+1) = 1 / (1 - f(n)) dla n ≥ 1.
+
+Obliczone wartości:
+
+f(8) = -1/3 → stwierdzenie „f(8) = 1/3” jest F
+
+f(9) = 3/4 → stwierdzenie „f(9) = 3/4” jest P
+
+f(10) = 4 → stwierdzenie „f(10) = 4” jest P
+
+f(100) = 4 → stwierdzenie „f(100) = -1/3” jest F
+
+(ciąg periodyczny długości 3: 4, −1/3, 3/4, 4, −1/3, ...)
+
+3.3 (liczby binarne)
+
+Dane: 1111₂ (to 15 dziesiętnie) i 101₂ (to 5 dziesiętnie).
+
+suma równa 10110₂? (10110₂ = 22) — F (15+5 = 20 = 10100₂)
+
+różnica równa 1010₂? (1010₂ = 10) — P (15−5 = 10 = 1010₂)
+
+iloczyn mniejszy od 110000₂? (110000₂ = 48) — F (15·5 = 75 > 48)
+
+iloraz większy od 10₂? (10₂ = 2) — P (15//5 = 3 = 11₂ > 10₂)
+
+3.4 (system operacyjny)
+
+Jednym z zadań systemu operacyjnego jest przydział pamięci działającym programom. — P
+
+Na jednym dysku twardym mogą być zainstalowane dwa systemy operacyjne. — P
+
+System operacyjny musi być przechowywany w pamięci ROM. — F
+
+System operacyjny musi być przechowywany na twardym dysku. — F
+(Uwaga: system może być uruchamiany z różnych nośników lub z sieci — nie jest wymóg ROM czy HDD.)
+
+4.1
+# zadanie_4_1.py
+import math
+
+a = b = 200
+r = 200
+
+with open("punkty.txt") as f:
+    points = [tuple(map(int, line.split())) for line in f]
+
+border_points = []
+inside_count = 0
+
+for x, y in points:
+    dist2 = (x - a)**2 + (y - b)**2
+    if dist2 == r**2:
+        border_points.append((x, y))
+    elif dist2 < r**2:
+        inside_count += 1
+
+with open("wyniki_4.txt", "w") as out:
+    out.write("4.1\n")
+    out.write("Punkty na brzegu koła:\n")
+    for x, y in border_points:
+        out.write(f"{x} {y}\n")
+    out.write(f"Liczba punktów wewnątrz koła: {inside_count}\n")
+
+4.2
+# zadanie_4_2.py
+import math
+
+a = b = 200
+r = 200
+
+with open("punkty.txt") as f:
+    points = [tuple(map(int, line.split())) for line in f]
+
+def estimate_pi(n):
+    inside = 0
+    for i in range(n):
+        x, y = points[i]
+        if (x - a)**2 + (y - b)**2 < r**2:
+            inside += 1
+    return 4 * inside / n  # bo (nk/n) = (πr²)/(4r²) => π ≈ 4·nk/n
+
+pi_1000 = round(estimate_pi(1000), 4)
+pi_5000 = round(estimate_pi(5000), 4)
+pi_all = round(estimate_pi(len(points)), 4)
+
+with open("wyniki_4.txt", "a") as out:
+    out.write("4.2\n")
+    out.write(f"pi1000 = {pi_1000}\n")
+    out.write(f"pi5000 = {pi_5000}\n")
+    out.write(f"pi10000 = {pi_all}\n")
+
+4.3
+# zadanie_4_3.py
+import math
+import matplotlib.pyplot as plt
+
+a = b = 200
+r = 200
+
+with open("punkty.txt") as f:
+    points = [tuple(map(int, line.split())) for line in f]
+
+def estimate_pi(n):
+    inside = 0
+    for i in range(n):
+        x, y = points[i]
+        if (x - a)**2 + (y - b)**2 < r**2:
+            inside += 1
+    return 4 * inside / n
+
+epsilons = []
+for n in range(1, 1701):
+    pi_n = estimate_pi(n)
+    eps = abs(math.pi - pi_n)
+    epsilons.append(eps)
+
+# wykres
+plt.figure(figsize=(8, 4))
+plt.plot(range(1, 1701), epsilons, color='blue')
+plt.xlabel("n")
+plt.ylabel("εn")
+plt.title("Błąd bezwzględny przybliżenia liczby π")
+plt.grid(True)
+plt.tight_layout()
+plt.savefig("wykres_4_3.png")
+
+with open("wyniki_4.txt", "a") as out:
+    out.write("4.3\n")
+    out.write(f"ε1000 = {round(epsilons[999],4)}\n")
+    out.write(f"ε1700 = {round(epsilons[1699],4)}\n")
+
+5.
+# zadanie_5.py
+from collections import defaultdict
+
+# --- wczytanie danych ---
+students = {}  # pesel -> (nazwisko, imię)
+with open("studenci.txt", encoding="utf-8") as f:
+    next(f)
+    for line in f:
+        pesel, nazw, imie = line.strip().split()
+        students[pesel] = (nazw, imie)
+
+rooms = {}  # pesel -> id_pok
+with open("meldunek.txt", encoding="utf-8") as f:
+    next(f)
+    for line in f:
+        pesel, pok = line.strip().split()
+        rooms[pesel] = pok
+
+borrows = defaultdict(list)  # pesel -> [tytuły]
+with open("wypozyczenia.txt", encoding="utf-8") as f:
+    next(f)
+    for line in f:
+        _, pesel, title = line.strip().split(maxsplit=2)
+        borrows[pesel].append(title)
+
+with open("wyniki_5.txt", "w", encoding="utf-8") as out:
+    # --- 5.1 ---
+    max_pesel = max(borrows, key=lambda p: len(borrows[p]))
+    nazw, imie = students[max_pesel]
+    out.write("5.1\n")
+    out.write(f"{imie} {nazw}\n")
+    for t in borrows[max_pesel]:
+        out.write(f"{t}\n")
+
+    # --- 5.2 ---
+    rooms_count = defaultdict(int)
+    for pesel in rooms:
+        rooms_count[rooms[pesel]] += 1
+    avg = sum(rooms_count.values()) / len(rooms_count)
+    out.write("5.2\n")
+    out.write(f"{avg:.4f}\n")
+
+    # --- 5.3 ---
+    women = men = 0
+    for pesel in students:
+        if int(pesel[-2]) % 2 == 0:
+            women += 1
+        else:
+            men += 1
+    out.write("5.3\n")
+    out.write(f"Kobiety: {women}, Mężczyźni: {men}\n")
+
+    # --- 5.4 ---
+    not_in_dorm = [
+        students[p] for p in students if p not in rooms
+    ]
+    not_in_dorm.sort()
+    out.write("5.4\n")
+    for nazw, imie in not_in_dorm:
+        out.write(f"{nazw} {imie}\n")
+
+    # --- 5.5 ---
+    room_titles = defaultdict(set)
+    for pesel, titles in borrows.items():
+        if pesel in rooms:
+            room = rooms[pesel]
+            for t in titles:
+                room_titles[room].add(t)
+    total_books = sum(len(t) for t in room_titles.values())
+    out.write("5.5\n")
+    out.write(f"{total_books}\n")
+
+6.1
+# zadanie_6_1.py
+
+def caesar_encrypt(word, k):
+    k %= 26
+    res = ""
+    for ch in word:
+        new = chr((ord(ch) - 65 + k) % 26 + 65)
+        res += new
+    return res
+
+with open("dane_6_1.txt", encoding="utf-8") as f:
+    words = [line.strip() for line in f]
+
+with open("wyniki_6_1.txt", "w", encoding="utf-8") as out:
+    for w in words:
+        out.write(caesar_encrypt(w, 107) + "\n")
+
+6.2
+# zadanie_6_2.py
+
+def caesar_decrypt(word, k):
+    k %= 26
+    res = ""
+    for ch in word:
+        new = chr((ord(ch) - 65 - k) % 26 + 65)
+        res += new
+    return res
+
+with open("dane_6_2.txt", encoding="utf-8") as f:
+    lines = [line.strip().split() for line in f]
+
+with open("wyniki_6_2.txt", "w", encoding="utf-8") as out:
+    for word, key in lines:
+        out.write(caesar_decrypt(word, int(key)) + "\n")
+
+6.3
+# zadanie_6_3.py
+
+def find_key_diff(a, b):
+    """Zwraca przesunięcie między dwoma literami (A-Z)"""
+    return (ord(b) - ord(a)) % 26
+
+with open("dane_6_3.txt", encoding="utf-8") as f:
+    pairs = [line.strip().split() for line in f]
+
+wrong = []
+for plain, cipher in pairs:
+    shifts = [find_key_diff(p, c) for p, c in zip(plain, cipher)]
+    if len(set(shifts)) != 1:
+        wrong.append(plain)
+
+with open("wyniki_6_3.txt", "w", encoding="utf-8") as out:
+    for w in wrong:
+        out.write(w + "\n")
